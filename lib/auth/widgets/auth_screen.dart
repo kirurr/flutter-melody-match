@@ -14,6 +14,16 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  Future<void> _handleSpotifyAuth() async {
+    await widget._authService.startSpotifyOAuth2();
+
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => StartupScreen()),
+    );
+  }
+
   Future<void> _handleGoogleAuth() async {
     await widget._authService.startGoogleOAuth2();
 
@@ -39,6 +49,10 @@ class _AuthScreenState extends State<AuthScreen> {
           ElevatedButton(
             onPressed: _handleGoogleAuth,
             child: Text('start google oauth'),
+          ),
+          ElevatedButton(
+            onPressed: _handleSpotifyAuth,
+            child: Text('start spotify oauth'),
           ),
         ],
       ),

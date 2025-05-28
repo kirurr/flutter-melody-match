@@ -9,7 +9,14 @@ class ApiClient {
 
   ApiClient() {
     if (serverUrl == null) throw Exception("serverUrl env variable is not set");
-    dio = Dio(BaseOptions(baseUrl: serverUrl!));
+    dio = Dio(
+      BaseOptions(
+        baseUrl: serverUrl!,
+        connectTimeout: Duration(seconds: 10),
+        sendTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+      ),
+    );
     dio.interceptors.addAll([
       AuthInterceptor(),
       RefreshTokenInterceptor(dio: dio),

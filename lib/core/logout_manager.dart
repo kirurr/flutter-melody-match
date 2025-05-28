@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:melody_match/auth/widgets/auth_widget.dart';
+import 'package:melody_match/auth/widgets/auth_screen.dart';
 import 'package:melody_match/main.dart';
-import 'package:melody_match/tokens/tokens_service.dart';
+import 'package:melody_match/user/user_state_manager.dart';
 
 typedef LogoutCallback = void Function();
 
 class LogoutManager {
   static LogoutCallback? onLogout;
 
-  static void logout() {
-    TokensService.instance.clearTokens();
+  static void logout() async {
+    await UserStateManager.instance.clearTokens();
+    UserStateManager.user = null;
+    await UserStateManager.instance.clearSeenIds();
     navigatorKey.currentState?.pushReplacement(
       MaterialPageRoute(builder: (_) => AuthScreen()),
     );

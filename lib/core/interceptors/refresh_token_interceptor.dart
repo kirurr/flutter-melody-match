@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:melody_match/core/entities/tokens.dart';
+import 'package:melody_match/auth/entities/tokens.dart';
 import 'package:melody_match/core/logout_manager.dart';
-import 'package:melody_match/tokens/tokens_service.dart';
+import 'package:melody_match/user/user_state_manager.dart';
 
 class RefreshTokenInterceptor extends Interceptor {
   final Dio dio;
 
-  final TokensService tokensService = TokensService.instance;
+  final UserStateManager tokensService = UserStateManager.instance;
 
   bool _isRefreshing = false;
 
@@ -18,7 +18,6 @@ class RefreshTokenInterceptor extends Interceptor {
     final isRefreshRequest = err.requestOptions.extra['refresh'] == true;
 
     if (statusCode == 401 && !isRefreshRequest) {
-      // Предотвращаем одновременные обновления
       if (_isRefreshing) {
         return handler.reject(err);
       }
@@ -32,7 +31,6 @@ class RefreshTokenInterceptor extends Interceptor {
           LogoutManager.logout();
           return;
         }
-
         final response = await dio.post(
           '/auth/refresh',
           data: {'refreshToken': tokens.refreshToken},
@@ -47,6 +45,8 @@ class RefreshTokenInterceptor extends Interceptor {
         final newRefreshToken = response.data['refreshToken'];
         await tokensService.saveAccessToken(newAccessToken);
         await tokensService.saveRefreshToken(newRefreshToken);
+
+        _isRefreshing = false;
 
         final opts = Options(
           method: err.requestOptions.method,
@@ -63,15 +63,23 @@ class RefreshTokenInterceptor extends Interceptor {
           options: opts,
         );
 
-        _isRefreshing = false;
         return handler.resolve(retryResponse);
-      } catch (e) {
+      } on DioException catch (e) {
+        if (e.response == null) {
+          _isRefreshing = false;
+          rethrow;
+        }
+
+        if (e.response?.statusCode == 400 &&
+            e.response?.extra['refresh'] == true) {
+          _isRefreshing = false;
+
+          LogoutManager.logout();
+
+          return;
+        }
         _isRefreshing = false;
-
-        // Разлогинить пользователя (см. предыдущий ответ)
-        LogoutManager.logout();
-
-        return;
+        return handler.reject(err);
       }
     }
 

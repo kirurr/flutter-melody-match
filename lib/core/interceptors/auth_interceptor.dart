@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:melody_match/tokens/tokens_service.dart';
+import 'package:melody_match/user/user_state_manager.dart';
 
 class AuthInterceptor extends Interceptor {
   AuthInterceptor();
@@ -9,7 +9,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final token = await TokensService.instance.getTokens();
+    final token = await UserStateManager.instance.getTokens();
     if (token.accessToken != null) {
       options.headers['Authorization'] = 'Bearer ${token.accessToken}';
     }
