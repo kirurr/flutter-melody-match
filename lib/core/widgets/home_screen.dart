@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('main page'),
         actions: [
           IconButton(
             onPressed: () {
@@ -127,7 +126,13 @@ class _FindUsersWidgetState extends State<_FindUsersWidget> {
   @override
   Widget build(BuildContext context) {
     return _isError
-        ? Text(_errorMessage)
+        ? Center(child: 
+        Column(children: [
+          Text(_errorMessage),
+          ElevatedButton(child: const Text('log out') , onPressed: () {
+            LogoutManager.logout();
+          },)
+        ],),)
         : _isLoading
         ? const Center(child: CircularProgressIndicator())
         : _matches == null || _matches!.isEmpty
@@ -164,7 +169,7 @@ class _FindUsersWidgetState extends State<_FindUsersWidget> {
                     IconButton(
                       onPressed: _isButtonLoading ? null : _showNextMatch,
                       icon: _isButtonLoading
-                          ? Icon(Icons.do_disturb)
+                          ? Icon(Icons.do_disturb, size: 64,)
                           : Icon(
                               Icons.navigate_next,
                               color: Theme.of(context).colorScheme.primary,

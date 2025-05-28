@@ -156,20 +156,8 @@ class _UnacceptedMatchItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(match.user.userData!.displayName),
-          TextButton(
-            onPressed: onAccept,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text('accept match'),
-                const Icon(Icons.navigate_next),
-              ],
-            ),
-          ),
           TextButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
@@ -180,7 +168,18 @@ class _UnacceptedMatchItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('about user'),
+                Text(match.user.userData!.displayName),
+                const Icon(Icons.navigate_next),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: onAccept,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('accept match'),
                 const Icon(Icons.navigate_next),
               ],
             ),
@@ -210,7 +209,6 @@ class _MatchItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(user.userData!.displayName),
           TextButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => AboutUserScreen(user: user)),
@@ -219,7 +217,7 @@ class _MatchItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text('about user'),
+                Text(user.userData!.displayName),
                 const Icon(Icons.navigate_next),
               ],
             ),

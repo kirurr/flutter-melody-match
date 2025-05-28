@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:melody_match/auth/widgets/auth_screen.dart';
+import 'package:melody_match/core/widgets/startup_screen.dart';
 import 'package:melody_match/main.dart';
 import 'package:melody_match/user/user_state_manager.dart';
 
@@ -13,7 +13,7 @@ class LogoutManager {
     UserStateManager.user = null;
     await UserStateManager.instance.clearSeenIds();
     navigatorKey.currentState?.pushReplacement(
-      MaterialPageRoute(builder: (_) => AuthScreen()),
+      MaterialPageRoute(builder: (_) => StartupScreen()),
     );
   }
 }

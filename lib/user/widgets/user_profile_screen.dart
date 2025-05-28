@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:melody_match/core/logout_manager.dart';
+import 'package:melody_match/match/widgets/contact_widget.dart';
 import 'package:melody_match/user/entities/user.dart';
 import 'package:melody_match/user/user_service.dart';
 import 'package:melody_match/user/user_state_manager.dart';
@@ -23,8 +24,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _deleteUser() async {
-    await _userService.deleteUser();
-    LogoutManager.logout();
+    try {
+      await _userService.deleteUser();
+    } catch (e) {
+      print(e);
+    } finally {
+      LogoutManager.logout();
+    }
   }
 
   @override
@@ -38,12 +44,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Column(
           children: [
             UserCard(user: user!),
+            Column(
+              children: user!.userData!.contacts
+                  .map((e) => ContactItem(contact: e))
+                  .toList(),
+            ),
             TextButton(
               onPressed: () => LogoutManager.logout(),
               child: Text('log out'),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => _deleteUser(),
               child: Text(
                 'delete user',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),

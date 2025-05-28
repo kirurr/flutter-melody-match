@@ -20,7 +20,7 @@ class UserPreferencesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('user preferences'),
+        title: Text('tell us about your preferences'),
         actions: [
           IconButton(
             onPressed: () {
@@ -81,6 +81,7 @@ class _UserPreferencesFormState extends State<UserPreferencesForm> {
 
   void _connectToSpotify() async {
     await _authService.startSpotifyOAuth2();
+    _tokens = await UserStateManager.instance.getTokens();
     await _assignSpotifyGenresToUser();
   }
 
@@ -207,82 +208,97 @@ class _UserPreferencesFormState extends State<UserPreferencesForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        children: [
-          Column(
-            children: [
-              ListTile(
-                title: const Text('male'),
-                leading: Radio<UserPreferencesDesiredSex>(
-                  value: UserPreferencesDesiredSex.MALE,
-                  groupValue: _desiredSex,
-                  onChanged: setDesiredSex,
-                ),
-              ),
-              ListTile(
-                title: const Text('female'),
-                leading: Radio<UserPreferencesDesiredSex>(
-                  value: UserPreferencesDesiredSex.FEMALE,
-                  groupValue: _desiredSex,
-                  onChanged: setDesiredSex,
-                ),
-              ),
-              ListTile(
-                title: const Text('both'),
-                leading: Radio<UserPreferencesDesiredSex>(
-                  value: UserPreferencesDesiredSex.BOTH,
-                  groupValue: _desiredSex,
-                  onChanged: setDesiredSex,
-                ),
-              ),
-            ],
-          ),
-          const Text('selected genres'),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            direction: Axis.horizontal,
-            children: _selectedGenres
-                .map(
-                  (e) => _GenreItem(
-                    key: ValueKey(e.id),
-                    isSelected: true,
-                    name: e.name,
-                    onTap: () => _removeGenre(e),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
+                    'prefered sex',
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                )
-                .toList(),
-          ),
-          TextFormField(
-            onChanged: (v) => _queryGenres(v),
-            decoration: const InputDecoration(labelText: 'find genres by name'),
-          ),
-          _genres.isEmpty
-              ? ElevatedButton(
-                  onPressed: _assignSpotifyGenresToUser,
-                  child: const Text('submit and assign spotify genres to user'),
-                )
-              : Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  direction: Axis.horizontal,
-                  children: _genres
-                      .map(
-                        (e) => _GenreItem(
-                          key: ValueKey(e.id),
-                          isSelected: false,
-                          name: e.name,
-                          onTap: () => _addGenre(e),
-                        ),
-                      )
-                      .toList(),
                 ),
-          ElevatedButton(onPressed: _submit, child: const Text('submit')),
-          SelectableText(_message ?? ''),
-        ],
+                ListTile(
+                  title: const Text('male'),
+                  leading: Radio<UserPreferencesDesiredSex>(
+                    value: UserPreferencesDesiredSex.MALE,
+                    groupValue: _desiredSex,
+                    onChanged: setDesiredSex,
+                  ),
+                ),
+                ListTile(
+                  title: const Text('female'),
+                  leading: Radio<UserPreferencesDesiredSex>(
+                    value: UserPreferencesDesiredSex.FEMALE,
+                    groupValue: _desiredSex,
+                    onChanged: setDesiredSex,
+                  ),
+                ),
+                ListTile(
+                  title: const Text('both'),
+                  leading: Radio<UserPreferencesDesiredSex>(
+                    value: UserPreferencesDesiredSex.BOTH,
+                    groupValue: _desiredSex,
+                    onChanged: setDesiredSex,
+                  ),
+                ),
+              ],
+            ),
+            const Text('selected genres'),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              direction: Axis.horizontal,
+              children: _selectedGenres
+                  .map(
+                    (e) => _GenreItem(
+                      key: ValueKey(e.id),
+                      isSelected: true,
+                      name: e.name,
+                      onTap: () => _removeGenre(e),
+                    ),
+                  )
+                  .toList(),
+            ),
+            TextFormField(
+              onChanged: (v) => _queryGenres(v),
+              decoration: const InputDecoration(
+                labelText: 'find genres by name',
+              ),
+            ),
+            _genres.isEmpty
+                ? ElevatedButton(
+                    onPressed: _connectToSpotify,
+                    child: const Text(
+                      'submit and assign spotify genres to user',
+                    ),
+                  )
+                : Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    direction: Axis.horizontal,
+                    children: _genres
+                        .map(
+                          (e) => _GenreItem(
+                            key: ValueKey(e.id),
+                            isSelected: false,
+                            name: e.name,
+                            onTap: () => _addGenre(e),
+                          ),
+                        )
+                        .toList(),
+                  ),
+            ElevatedButton(onPressed: _submit, child: const Text('submit')),
+            SelectableText(_message ?? ''),
+          ],
+        ),
       ),
     );
   }

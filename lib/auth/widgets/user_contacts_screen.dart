@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:melody_match/auth/widgets/user_preferences_screen.dart';
 import 'package:melody_match/core/logout_manager.dart';
 import 'package:melody_match/user/entities/user_contact.dart';
-import 'package:melody_match/user/entities/user_data.dart';
 import 'package:melody_match/user/user_service.dart';
 import 'package:melody_match/user/user_state_manager.dart';
-import 'package:melody_match/utils/utils.dart';
 
 class UserContactsScreen extends StatefulWidget {
   const UserContactsScreen({super.key});
@@ -74,12 +71,12 @@ class _UserContactsFormState extends State<UserContactsForm> {
 
     setState(() {
       _contacts.add(contact);
+      _nameController.clear();
+      _valueController.clear();
     });
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-
     setState(() {
       _isLoading = true;
       _isError = false;
@@ -100,7 +97,9 @@ class _UserContactsFormState extends State<UserContactsForm> {
 
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const UserPreferencesScreen(user: null,)),
+        MaterialPageRoute(
+          builder: (_) => const UserPreferencesScreen(user: null),
+        ),
       );
     } catch (e) {
       setState(() {
@@ -116,31 +115,44 @@ class _UserContactsFormState extends State<UserContactsForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'name'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'name is required' : null,
-          ),
-          TextFormField(
-            controller: _valueController,
-            decoration: const InputDecoration(labelText: 'value'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'value is required' : null,
-          ),
-          ElevatedButton(onPressed: _addContact, child: const Text('add contact')),
-          Text('contacts: '),
-          Wrap(
-            children: _contacts.map((e) => _ContactItem(contact: e, onDelete: () => _removeContact(e))).toList(),
-           ),
-          Text(_message ?? ''),
-          ElevatedButton(onPressed: _submit, child: const Text('submit')),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'name'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'name is required' : null,
+            ),
+            TextFormField(
+              controller: _valueController,
+              decoration: const InputDecoration(labelText: 'value'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'value is required' : null,
+            ),
+            ElevatedButton(
+              onPressed: _addContact,
+              child: const Text('add contact'),
+            ),
+            Wrap(
+            spacing: 8,
+              children: _contacts
+                  .map(
+                    (e) => _ContactItem(
+                      contact: e,
+                      onDelete: () => _removeContact(e),
+                    ),
+                  )
+                  .toList(),
+            ),
+            Text(_message ?? ''),
+            ElevatedButton(onPressed: _submit, child: const Text('submit')),
+          ],
+        ),
       ),
     );
   }
@@ -162,10 +174,13 @@ class _ContactItem extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(children: [Text(contact.name), Text(contact.value)]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [Text(contact.name), Text(contact.value)],
+          ),
           IconButton(onPressed: onDelete, icon: Icon(Icons.delete)),
         ],
       ),

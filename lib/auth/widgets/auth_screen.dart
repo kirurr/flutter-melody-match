@@ -42,17 +42,17 @@ class _AuthScreenState extends State<AuthScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'auth',
+            'sign in',
             style: Theme.of(context).textTheme.headlineLarge,
             textAlign: TextAlign.center,
           ),
           ElevatedButton(
             onPressed: _handleGoogleAuth,
-            child: Text('start google oauth'),
+            child: Text('sign in with google'),
           ),
           ElevatedButton(
             onPressed: _handleSpotifyAuth,
-            child: Text('start spotify oauth'),
+            child: Text('sign in with spotify'),
           ),
         ],
       ),

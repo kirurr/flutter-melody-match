@@ -19,7 +19,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('user data'),
+        title: Text('tell us about yourself'),
         actions: [
           IconButton(
             onPressed: () {
@@ -108,62 +108,70 @@ class _UserDataFormState extends State<UserDataForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _ageController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(labelText: 'age'),
-            validator: (v) {
-              if (v == null || v.isEmpty) return 'age is required';
-              final bool isVaid = isNumeric(v);
-              return isVaid ? null : 'invalid age';
-            },
-          ),
-          Column(
-            children: [
-              ListTile(
-                title: const Text('male'),
-                leading: Radio<UserDataSex>(
-                  value: UserDataSex.MALE,
-                  groupValue: _sex,
-                  onChanged: setSex,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _ageController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'age'),
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'age is required';
+                final bool isVaid = isNumeric(v);
+                return isVaid ? null : 'invalid age';
+              },
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('sex', style: Theme.of(context).textTheme.bodyLarge),
                 ),
-              ),
-              ListTile(
-                title: const Text('female'),
-                leading: Radio<UserDataSex>(
-                  value: UserDataSex.FEMALE,
-                  groupValue: _sex,
-                  onChanged: setSex,
+                ListTile(
+                  title: const Text('male'),
+                  leading: Radio<UserDataSex>(
+                    value: UserDataSex.MALE,
+                    groupValue: _sex,
+                    onChanged: setSex,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          TextFormField(
-            controller: _displayNameController,
-            decoration: const InputDecoration(labelText: 'display name'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'display name is required' : null,
-          ),
-          TextFormField(
-            controller: _aboutController,
-            decoration: const InputDecoration(labelText: 'about'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'about is required' : null,
-          ),
-          TextFormField(
-            controller: _imageUrlController,
-            decoration: const InputDecoration(labelText: 'image url'),
-            validator: (v) =>
-                v == null || v.isEmpty ? 'image url is required' : null,
-          ),
-          ElevatedButton(onPressed: _submit, child: const Text('submit')),
-          Text(_message ?? ''),
-        ],
+                ListTile(
+                  title: const Text('female'),
+                  leading: Radio<UserDataSex>(
+                    value: UserDataSex.FEMALE,
+                    groupValue: _sex,
+                    onChanged: setSex,
+                  ),
+                ),
+              ],
+            ),
+            TextFormField(
+              controller: _displayNameController,
+              decoration: const InputDecoration(labelText: 'your name'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'name is required' : null,
+            ),
+            TextFormField(
+              controller: _aboutController,
+              decoration: const InputDecoration(labelText: 'tell us about yourself'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'tell us about yourself' : null,
+            ),
+            TextFormField(
+              controller: _imageUrlController,
+              decoration: const InputDecoration(labelText: 'image url'),
+              validator: (v) =>
+                  v == null || v.isEmpty ? 'image url is required' : null,
+            ),
+            ElevatedButton(onPressed: _submit, child: const Text('submit')),
+            Text(_message ?? ''),
+          ],
+        ),
       ),
     );
   }
