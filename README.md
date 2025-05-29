@@ -37,6 +37,12 @@ Before you begin, ensure you have the following tools installed:
    flutter pub get
    ```
 
+4. Create a `.env` file in the root directory of the project and add the following variable:
+
+   ```bash
+   SERVER_URL="<your_server_url>"
+   ```
+
 ## Running the Project
 
 To run the project on an emulator or connected device, execute the following command:
