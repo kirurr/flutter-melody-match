@@ -5,7 +5,7 @@ import 'package:melody_match/core/widgets/startup_screen.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "env");
   runApp(const MyApp());
 }
 

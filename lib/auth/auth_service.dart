@@ -61,7 +61,6 @@ class AuthService {
 
   Future<void> startGoogleOAuth2() async {
     final url = Uri.parse('$serverUrl/auth/android/google/redirect');
-    print(url);
 
     final completer = Completer<void>();
 

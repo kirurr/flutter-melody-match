@@ -5,6 +5,7 @@ import 'package:melody_match/auth/widgets/user_data_screen.dart';
 import 'package:melody_match/auth/widgets/user_preferences_screen.dart';
 import 'package:melody_match/auth/entities/tokens.dart';
 import 'package:melody_match/core/logout_manager.dart';
+import 'package:melody_match/core/widgets/error_screen.dart';
 import 'package:melody_match/core/widgets/home_screen.dart';
 import 'package:melody_match/user/user_state_manager.dart';
 import 'package:melody_match/user/entities/user.dart';
@@ -73,7 +74,12 @@ class _StartupScreenState extends State<StartupScreen> {
         return;
       }
     } catch (e) {
-      LogoutManager.logout();
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => ErrorScreen(errorMessage: e.toString())),
+      );
       return;
     }
 
