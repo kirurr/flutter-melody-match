@@ -23,7 +23,10 @@ class UserService {
 
   Future<void> assignSpotifyGenresToUser({required String? token}) async {
     try {
-      await _apiClient.dio.post('/spotify/user', data: token == null ? {} : {'accessToken': token});
+      await _apiClient.dio.post(
+        '/spotify/user',
+        data: token == null ? {} : {'accessToken': token},
+      );
     } on DioException catch (e) {
       if (e.response != null) {
         throw Exception(e.response?.data);
@@ -40,6 +43,31 @@ class UserService {
         data: {
           'contacts': contacts
               .map((e) => {'name': e.name, 'value': e.value})
+              .toList(),
+        },
+      );
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw Exception(e.response?.data);
+      } else {
+        throw Exception(e.message);
+      }
+    }
+  }
+
+  Future<void> updateContacts(List<UserContact> contacts) async {
+    try {
+      await _apiClient.dio.patch(
+        '/user/contacts',
+        data: {
+          'contacts': contacts
+              .map(
+                (e) => {
+                  'id': e.id == 0 ? null : e.id,
+                  'name': e.name,
+                  'value': e.value,
+                },
+              )
               .toList(),
         },
       );

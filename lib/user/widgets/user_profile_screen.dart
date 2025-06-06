@@ -4,6 +4,7 @@ import 'package:melody_match/match/widgets/contact_widget.dart';
 import 'package:melody_match/user/entities/user.dart';
 import 'package:melody_match/user/user_service.dart';
 import 'package:melody_match/user/user_state_manager.dart';
+import 'package:melody_match/user/widgets/update_user_contacts_screen.dart';
 import 'package:melody_match/user/widgets/user_card.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -58,6 +59,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: Text(
                 'delete user',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const UpdateUserContactsScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                'update contacts',
               ),
             ),
           ],
